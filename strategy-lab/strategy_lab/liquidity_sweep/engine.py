@@ -98,8 +98,10 @@ class Backtester:
         com += 2 * c.commission_per_lot * qty / c.lot_size if c.commission_per_lot else 0.0
         return com
 
-    def run(self, df: pd.DataFrame) -> dict:
+    def run(self, df: pd.DataFrame, trade_from=None) -> dict:
+        """trade_from (opcional): antes de esa fecha solo se calientan swings, no se detectan setups."""
         c = self.cfg
+        tf = pd.Timestamp(trade_from, tz="UTC") if trade_from is not None else None
         o, h, l, cl = (df[k].to_numpy() for k in ("open", "high", "low", "close"))
         ts = df.index
         n, N = len(df), c.swing_n
@@ -158,6 +160,8 @@ class Backtester:
 
             # 4) detección (solo si no hay orden ni posición y se puede operar)
             if order is not None or pos is not None or not self.rm.can_trade():
+                continue
+            if tf is not None and ts[t] < tf:
                 continue
             # 4a) sweeps
             if swing_lows:

@@ -2,3 +2,4 @@
 from .config import StrategyConfig, LIVE_TRADING_ENABLED, forex_eurusd, crypto_btcusdt
 from .engine import Backtester, load_csv, validate_bars, metrics
 from .risk import RiskManager, assert_paper_only, LiveTradingBlocked
+from .engine_v02 import StrategyConfigV02, BacktesterV02, forex_v02
